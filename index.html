@@ -3,88 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BV UNG BƯỚU CS2 - KHOA XÉT NGHIỆM v81</title>
+    <title>QUẢN LÝ THIẾT BỊ - BV UNG BƯỚU CS2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-blue: #003366; --sidebar-bg: #1e293b; --border: #cccccc;
-            --danger: #cc0000; --warning: #ff9900; --success: #28a745;
+            --primary-blue: #003366; --secondary-green: #28a745;
+            --light-bg: #f4f7f9; --white: #ffffff;
+            --danger: #d32f2f; --warning: #ff9800;
         }
         * { box-sizing: border-box; font-family: "Times New Roman", Times, serif; }
-        body { margin: 0; display: flex; height: 100vh; background: #f0f2f5; overflow: hidden; }
+        body { margin: 0; display: flex; height: 100vh; background: var(--light-bg); overflow: hidden; }
 
-        /* Sidebar Navigation */
-        .sidebar { width: 260px; background: var(--sidebar-bg); color: white; flex-shrink: 0; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 25px 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { padding: 15px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; color: #cbd5e1; }
-        .nav-item:hover, .nav-item.active { background: #0055a5; color: white; }
-        .nav-status { background: var(--danger); font-weight: bold; border-left: 5px solid #fff; }
+        /* Sidebar */
+        .sidebar { 
+            width: 270px; background: linear-gradient(180deg, #002244 0%, #004080 100%); 
+            color: white; flex-shrink: 0; display: flex; flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.3); z-index: 100;
+        }
+        .sidebar-header { padding: 30px 15px; text-align: center; border-bottom: 2px solid var(--secondary-green); background: rgba(0,0,0,0.2); }
+        .sidebar-header h3 { margin: 0; font-size: 20px; letter-spacing: 1px; }
+        .sidebar-header p { margin: 8px 0 0; color: #a5d6a7; font-size: 14px; font-weight: bold; }
 
-        /* Main Area */
+        .nav-item { padding: 18px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.3s; color: #cfd8dc; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); color: white; padding-left: 35px; }
+        .nav-item.active { background: var(--secondary-green); color: white; font-weight: bold; }
+
+        #navStatus { background: #7f1d1d; color: #fca5a5; display: none; border-left: 5px solid #ef4444; }
+        .nav-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.2); opacity: 0.8; }
+
         .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-bar { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-blue); }
-        .content { padding: 20px; overflow-y: auto; flex: 1; }
+        .top-bar { background: var(--white); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--primary-blue); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .top-bar h2 { margin: 0; color: var(--primary-blue); font-size: 26px; }
 
-        /* Dashboard Boxes */
-        .dashboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
-        .box-card { padding: 25px 10px; border-radius: 8px; color: white; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .box-card:hover { transform: scale(1.03); }
+        .dashboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 25px; }
+        .box-card { padding: 30px 10px; background: var(--white); color: var(--primary-blue); text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 18px; border: 2px solid var(--primary-blue); border-radius: 12px; box-shadow: 0 6px 0px var(--primary-blue); }
+        .box-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,51,102,0.2); background: var(--primary-blue); color: white; }
 
-        /* Table Style */
-        .card-table { background: white; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: none; }
+        .card-table { margin: 0 25px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: none; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f1f5f9; padding: 12px; text-align: left; color: var(--primary-blue); border-bottom: 2px solid var(--border); font-size: 13px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 15px; }
+        th { background: var(--primary-blue); color: white; padding: 15px; text-align: left; font-size: 16px; }
+        td { padding: 14px; border-bottom: 1px solid #eee; font-size: 16px; }
+        tr:hover { background: #f1f8ff; }
 
-        /* Modal Layout */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; width: 950px; border-radius: 10px; overflow: hidden; position: relative; max-height: 95vh; display: flex; flex-direction: column; }
-        .modal-header { background: var(--primary-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 25px; display: grid; grid-template-columns: 280px 1fr; gap: 30px; overflow-y: auto; }
-        
-        .qr-section { background: #f8f9fa; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fff; }
-        .info-item label { font-size: 11px; color: #666; font-weight: bold; display: block; text-transform: uppercase; margin-bottom: 2px; }
-        .info-item span { font-size: 14px; font-weight: bold; color: #000; }
+        .btn { padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 6px; border: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 15px; }
+        .btn-green { background: var(--secondary-green); color: white; }
+        .btn-blue { background: var(--primary-blue); color: white; }
 
-        /* Nhật ký 2 cột */
-        .history-layer { display: none; position: absolute; inset: 0; background: white; z-index: 100; padding: 30px; overflow-y: auto; }
-        .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .log-column { border: 1px solid #eee; padding: 15px; border-radius: 8px; }
-        .log-entry { background: #f8f9fa; padding: 12px; border-left: 4px solid var(--primary-blue); margin-bottom: 10px; position: relative; border-radius: 4px; }
-        .log-actions { position: absolute; top: 8px; right: 10px; display: flex; gap: 12px; }
-        .log-actions i { cursor: pointer; font-size: 14px; color: #666; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,20,40,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content-lg { background: white; width: 950px; border-radius: 20px; max-height: 95vh; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-header { background: var(--primary-blue); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 30px; display: grid; grid-template-columns: 280px 1fr; gap: 40px; overflow-y: auto; }
 
-        .btn { padding: 10px 20px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .task-item { background: #fff5f5; border: 1px solid var(--danger); border-left: 5px solid var(--danger); padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #fafafa; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+        .info-item label { font-size: 12px; color: var(--secondary-green); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .info-item span { font-size: 16px; font-weight: bold; color: #333; }
+
+        .task-card-active { background: #fff5f5; border: 2px dashed var(--danger); padding: 15px; border-radius: 10px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .task-info-red { color: var(--danger); font-weight: bold; font-size: 15px; line-height: 1.5; }
+
+        .checklist-group { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .checklist-group h4 { margin: 0 0 10px 0; color: var(--primary-blue); border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 15px; }
+        .chk-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #eee; cursor: pointer; }
+
+        .log-entry { background: #f8f9fa; padding: 12px; border-left: 5px solid var(--primary-blue); margin-bottom: 10px; position: relative; border-radius: 4px; border: 1px solid #eee; }
+        .log-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 15px; }
+        .log-actions i { cursor: pointer; font-size: 16px; color: #bbb; transition: 0.2s; }
+        .log-actions i:hover { color: var(--primary-blue); }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--primary-blue); }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header"><h3>BV UNG BƯỚU CS2</h3><p style="font-size:12px;">KHOA XÉT NGHIỆM</p></div>
-        <div class="nav-item" onclick="showDashboard()"><i class="fas fa-home"></i> TRANG CHỦ</div>
-        <div class="nav-item" onclick="setFilter('status_center')"><i class="fas fa-tools"></i> TRẠNG THÁI THIẾT BỊ</div>
-        <div style="flex:1"></div>
-        <div class="nav-item" onclick="setFilter('all')"><i class="fas fa-database"></i> TỔNG THIẾT BỊ</div>
+        <div class="sidebar-header"><h3>BV UNG BƯỚU CS2</h3><p>KHOA XÉT NGHIỆM</p></div>
+        <div class="nav-item active" id="menuHome" onclick="showDashboard()"><i class="fas fa-home"></i> TRANG CHỦ</div>
+        <div class="nav-item" id="navStatus" onclick="setFilter('error')"><i class="fas fa-exclamation-triangle"></i> HỆ THỐNG CẢNH BÁO</div>
+        <div class="nav-item nav-bottom" id="menuAll" onclick="setFilter('all')"><i class="fas fa-database"></i> TỔNG THIẾT BỊ</div>
     </div>
 
     <div class="main">
         <div class="top-bar">
-            <h2 id="pageTitle" style="color: var(--primary-blue); margin:0;">QUẢN LÝ THIẾT BỊ</h2>
-            <button id="globalAddBtn" class="btn" style="background:var(--success); color:white;" onclick="openAddModal()">+ THÊM MÁY MỚI</button>
+            <h2>Hệ Thống Quản Lý Thiết Bị</h2>
+            <button id="btnAddDevice" class="btn btn-green" onclick="openAddModal()">+ THÊM MÁY MỚI</button>
         </div>
+        
         <div class="content">
             <div id="mainDashboard" class="dashboard">
-                <div class="box-card" style="background:#cc0000" onclick="setFilter('Huyết học')"><h3>HUYẾT HỌC</h3></div>
-                <div class="box-card" style="background:#0055a5" onclick="setFilter('Miễn dịch')"><h3>MIỄN DỊCH</h3></div>
-                <div class="box-card" style="background:#28a745" onclick="setFilter('Sinh hóa')"><h3>SINH HÓA</h3></div>
-                <div class="box-card" style="background:#ff9900" onclick="setFilter('Vi sinh')"><h3>VI SINH</h3></div>
-                <div class="box-card" style="background:#660099" onclick="setFilter('SHPT')"><h3>SHPT</h3></div>
+                <div class="box-card" onclick="setFilter('Huyết học')">HUYẾT HỌC</div>
+                <div class="box-card" onclick="setFilter('Miễn dịch')">MIỄN DỊCH</div>
+                <div class="box-card" onclick="setFilter('Sinh hóa')">SINH HÓA</div>
+                <div class="box-card" onclick="setFilter('Vi sinh')">VI SINH</div>
+                <div class="box-card" onclick="setFilter('SHPT')">SHPT</div>
             </div>
+            
             <div id="tableArea" class="card-table">
                 <table>
-                    <thead><tr><th>NHÓM</th><th>TÊN THIẾT BỊ</th><th>MÃ ID</th><th>MODEL</th><th>SERIAL</th><th>TRẠNG THÁI</th><th>XÓA</th></tr></thead>
+                    <thead>
+                        <tr><th>Nhóm</th><th>Tên Thiết Bị</th><th>Mã ID</th><th>Model</th><th>Serial</th><th>Trạng Thái</th><th style="text-align:center">Xóa</th></tr>
+                    </thead>
                     <tbody id="deviceTableBody"></tbody>
                 </table>
             </div>
@@ -92,222 +111,328 @@
     </div>
 
     <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <div id="historyLayer" class="history-layer">
-                <div style="display:flex; justify-content:space-between; border-bottom:2px solid var(--primary-blue); margin-bottom:15px; padding-bottom:10px;">
-                    <h3>LỊCH SỬ BẢO TRÌ & SỬA CHỮA</h3>
-                    <button class="btn" onclick="toggleHistory(false)">ĐÓNG</button>
-                </div>
-                <div class="history-grid">
-                    <div class="log-column"><h4 style="color:var(--warning); text-align:center;">🛠 BẢO TRÌ</h4><div id="histBT"></div></div>
-                    <div class="log-column"><h4 style="color:var(--danger); text-align:center;">🚨 SỬA CHỮA</h4><div id="histSM"></div></div>
-                </div>
-            </div>
-
+        <div class="modal-content-lg">
             <div class="modal-header">
-                <div><h2 id="detName" style="margin:0">Tên máy</h2><small id="detIdSub"></small></div>
-                <span onclick="closeModals()" style="cursor:pointer; font-size:24px;">&times;</span>
+                <div><h2 id="detName" style="margin:0">Tên máy</h2><small id="detIdSub" style="color:#a5d6a7; font-weight:bold;"></small></div>
+                <span onclick="closeModals()" style="cursor:pointer; font-size:35px;">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="qr-section">
-                    <img id="detQR" style="width:180px; border:1px solid #ddd; padding:5px; border-radius:10px; background:white;">
-                    <div id="detStatusBadge" style="font-weight:bold; margin:15px 0;"></div>
-                    <button class="btn" style="width:100%; border:1px solid #ddd; margin-bottom:10px;" onclick="printLabel()">🖨 IN TEM QR (MỞ WEB)</button>
-                    <button class="btn" style="width:100%; border:1px solid #ddd;" onclick="toggleHistory(true)">📜 XEM/SỬA NHẬT KÝ</button>
+                <div style="text-align:center; border-right: 1px solid #eee; padding-right: 25px;">
+                    <img id="detQR" style="width:200px; border:5px solid #f0f0f0; border-radius:10px; margin-bottom:20px;">
+                    <div id="detStatusBadge" style="font-weight:bold; font-size:18px; margin-bottom:20px;"></div>
+                    <button id="btnCheckOpen" class="btn" style="width:100%; margin-bottom:12px; background:#e3f2fd; border:1px solid #2196f3; color:#1565c2;" onclick="openChecklist()">📋 GHI CHECKLIST</button>
+                    <button class="btn" style="width:100%; background:#f1f5f9; border:1px solid #ddd;" onclick="openHistoryModal()">📜 NHẬT KÝ CHI TIẾT</button>
                 </div>
                 <div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h3 style="color:var(--primary-blue); margin:0;">THÔNG TIN CHI TIẾT</h3>
-                        <button class="btn" style="padding:4px 10px; font-size:11px; border:1px solid #ddd;" onclick="openEditFromDetail()">SỬA</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 style="margin:0; color:var(--primary-blue); font-size:20px; text-decoration: underline;">Thông Tin Chi Tiết</h3>
+                        <button class="btn btn-blue" style="padding:5px 12px; font-size:13px;" onclick="openEditFromDetail()">SỬA THÔNG TIN</button>
                     </div>
                     <div class="info-grid">
                         <div class="info-item"><label>Model</label><span id="detModel"></span></div>
                         <div class="info-item"><label>Số Serial</label><span id="detSerial"></span></div>
                         <div class="info-item"><label>Vị trí</label><span id="detLocation"></span></div>
+                        <div class="info-item"><label>Tình trạng</label><span id="detCondition"></span></div>
                         <div class="info-item"><label>Hãng Sản Xuất</label><span id="detVendor"></span></div>
                         <div class="info-item"><label>Đơn vị Cung ứng</label><span id="detProvider"></span></div>
                         <div class="info-item"><label>Liên hệ kỹ thuật</label><span id="detContact"></span></div>
                         <div class="info-item"><label>Phụ trách</label><span id="detStaff"></span></div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
-                        <button class="btn" style="background:var(--warning); color:white;" onclick="startWork('BT')">BẢO TRÌ</button>
-                        <button class="btn" style="background:var(--danger); color:white;" onclick="startWork('SM')">SỬA MÁY</button>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
+                        <button class="btn" style="background:var(--warning); color:white;" onclick="startWork('BT')">🛠 BẢO TRÌ</button>
+                        <button class="btn" style="background:var(--danger); color:white;" onclick="startWork('SM')">🚨 BÁO SỬA</button>
                     </div>
-                    <div id="currentTaskList" style="margin-top:15px;"></div>
+                    <div id="activeTaskArea"></div>
+                    <div style="margin-top:30px; border-top: 2px solid #eee; padding-top:20px;">
+                        <b style="font-size:15px; color: #555;">TRA CỨU CHECKLIST:</b>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                            <input type="date" id="historyDateSelect" onchange="viewPastChecklist()" style="padding:8px; border:1px solid #ddd; border-radius:5px;">
+                            <i class="fas fa-history" style="font-size: 24px; color: var(--secondary-green); cursor: pointer;" title="Lịch sử checklist" onclick="openChecklistHistory()"></i>
+                        </div>
+                        <div id="historyDetailContent" style="margin-top:15px; font-style:italic; padding:15px; background:#f9f9f9; border-radius:8px; border-left: 5px solid var(--secondary-green);"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="editLogModal" class="modal" style="z-index:3000;">
-        <div class="modal-content" style="width: 400px; padding: 25px;">
-            <h3>SỬA DÒNG NHẬT KÝ</h3>
-            <label>Kỹ sư:</label><input type="text" id="elTech" style="width:100%; padding:8px; margin-bottom:10px;">
-            <label>Nội dung:</label><input type="text" id="elNote" style="width:100%; padding:8px; margin-bottom:10px;">
-            <label>Bắt đầu:</label><input type="text" id="elStart" style="width:100%; padding:8px; margin-bottom:10px;">
-            <label>Kết thúc:</label><input type="text" id="elEnd" style="width:100%; padding:8px; margin-bottom:10px;">
-            <div style="display:flex; gap:10px;">
-                <button class="btn" style="background:var(--success); color:white; flex:1;" onclick="saveEditedLog()">LƯU</button>
-                <button class="btn" style="flex:1;" onclick="document.getElementById('editLogModal').style.display='none'">HỦY</button>
+    <div id="checklistModal" class="modal">
+        <div class="modal-content-lg" style="width: 750px;">
+            <div class="modal-header"><h3>BẢNG KIỂM BẢO DƯỠNG (BMQL.14.05)</h3><span onclick="backToDetail('checklistModal')" style="cursor:pointer; font-size:30px;">&times;</span></div>
+            <div style="padding:25px;">
+                <div style="display:flex; gap:15px; background:#f1f5f9; padding:15px; border-radius:10px; margin-bottom:15px; align-items:center;">
+                    Mã NV: <input type="text" id="staffCode" placeholder="h5" style="width:80px; padding:8px;">
+                    Ngày: <input type="date" id="checkDateNow" style="padding:8px;">
+                    <button class="btn btn-blue" title="Chỉ tích nhanh mục mỗi ngày" onclick="checkDailyOnly()"><i class="fas fa-check-double"></i></button>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <div class="checklist-group">
+                        <h4>BẢO DƯỠNG MỖI NGÀY</h4>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 1. Vệ sinh bề mặt và kiểm tra hóa chất</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 2. Thay wash solution (76)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 3. Thay NaCl 0,9% (78)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 4. Thay wash solution 2% (W1 cấp cứu)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 5. Thay cleaning solution (cấp cứu)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 6. Rửa W1, ISE cleaning, mồi</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 7. Hiệu chuẩn và tạo ngày mới</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-daily"> 8. Nội kiểm (QC)</label>
+                    </div>
+                    <div class="checklist-group">
+                        <h4>BẢO DƯỠNG MỖI TUẦN</h4>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 1. Vệ sinh que khuấy, lọ NaCl 0,9%, cảm biến, giếng mẫu</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 2. Thay NaOH 0,1M, rửa W2</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 3. Thay HCl 1M (hoặc ISE cleaning 10%), rửa W2</label>
+                    </div>
+                    <div class="checklist-group">
+                        <h4>BẢO DƯỠNG MỖI THÁNG / QUÝ</h4>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 1. Thay bóng đèn halogen (Tháng)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 2. Vệ sinh trạm rửa cuvette, giếng rửa que khuấy (Tháng)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 3. Kiểm tra cột lọc nước khử ion (Tháng)</label>
+                        <label class="chk-item"><input type="checkbox" class="chk-other"> 4. Thay dây bơm detergent (Quý)</label>
+                    </div>
+                </div>
+                <button class="btn btn-green" style="width:100%; margin-top:20px; padding:15px;" onclick="saveChecklist()">XÁC NHẬN HOÀN THÀNH</button>
             </div>
         </div>
     </div>
 
+    <div id="historyModal" class="modal">
+        <div class="modal-content-lg" style="width: 850px;">
+            <div class="modal-header"><h3>NHẬT KÝ THIẾT BỊ</h3><span onclick="backToDetail('historyModal')" style="cursor:pointer; font-size:30px;">&times;</span></div>
+            <div style="padding:25px; display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
+                <div style="border:1px solid #eee; padding:15px; border-radius:10px;">
+                    <h4 style="color:var(--primary-blue); border-bottom: 2px solid var(--primary-blue);">🛠 BẢO TRÌ</h4>
+                    <div id="histBT" style="max-height: 450px; overflow-y:auto;"></div>
+                </div>
+                <div style="border:1px solid #eee; padding:15px; border-radius:10px;">
+                    <h4 style="color:var(--danger); border-bottom: 2px solid var(--danger);">🚨 SỬA MÁY</h4>
+                    <div id="histSM" style="max-height: 450px; overflow-y:auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checklistHistoryModal" class="modal">
+        <div class="modal-content-lg" style="width: 650px;">
+            <div class="modal-header"><h3>LỊCH SỬ CHECKLIST</h3><span onclick="backToDetail('checklistHistoryModal')" style="cursor:pointer; font-size:30px;">&times;</span></div>
+            <div id="checklistHistoryBody" style="padding: 20px; overflow-y: auto; max-height: 70vh;"></div>
+        </div>
+    </div>
+
     <div id="formModal" class="modal">
-        <div class="modal-content" style="max-width: 650px;">
-            <div class="modal-header"><h2>Thông tin máy</h2><span onclick="closeModals()">&times;</span></div>
-            <form id="deviceForm" style="padding:20px; display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+        <div class="modal-content-lg" style="width: 750px;">
+            <div class="modal-header"><h2 id="formTitle">DỮ LIỆU THIẾT BỊ</h2><span onclick="closeModals()" style="cursor:pointer; font-size:30px;">&times;</span></div>
+            <form id="deviceForm" style="padding:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                 <input type="hidden" id="editKey">
-                <div style="grid-column: span 2;"><label>Tên thiết bị</label><input type="text" id="fName" style="width:100%; padding:8px;" required></div>
-                <div><label>Mã ID</label><input type="text" id="fId" style="width:100%; padding:8px;" required></div>
-                <div><label>Nhóm</label><select id="fGroup" style="width:100%; padding:10px;"><option value="Huyết học">Huyết học</option><option value="Miễn dịch">Miễn dịch</option><option value="Sinh hóa">Sinh hóa</option><option value="Vi sinh">Vi sinh</option><option value="SHPT">SHPT</option></select></div>
-                <div><label>Model</label><input type="text" id="fModel" style="width:100%; padding:8px;"></div>
-                <div><label>Số Serial</label><input type="text" id="fSerial" style="width:100%; padding:8px;"></div>
-                <div><label>Vị trí</label><input type="text" id="fLocation" style="width:100%; padding:8px;"></div>
-                <div><label>Hãng Sản Xuất</label><input type="text" id="fVendor" style="width:100%; padding:8px;"></div>
-                <div><label>Đơn vị Cung ứng</label><input type="text" id="fProvider" style="width:100%; padding:8px;"></div>
-                <div><label>Liên hệ kỹ thuật</label><input type="text" id="fContact" style="width:100%; padding:8px;"></div>
-                <div><label>Phụ trách</label><input type="text" id="fStaff" style="width:100%; padding:8px;"></div>
-                <div style="grid-column: span 2;"><button type="submit" class="btn" style="background:var(--primary-blue); color:white; width:100%;">LƯU THAY ĐỔI</button></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Tên máy</label><input type="text" id="fName" required></div>
+                <div class="form-group"><label>Mã ID</label><input type="text" id="fId" required></div>
+                <div class="form-group"><label>Nhóm máy</label><select id="fGroup"><option value="Sinh hóa">Sinh hóa</option><option value="Huyết học">Huyết học</option><option value="Miễn dịch">Miễn dịch</option><option value="Vi sinh">Vi sinh</option><option value="SHPT">SHPT</option></select></div>
+                <div class="form-group"><label>Model</label><input type="text" id="fModel"></div>
+                <div class="form-group"><label>Số Serial</label><input type="text" id="fSerial"></div>
+                <div class="form-group"><label>Vị trí</label><input type="text" id="fLocation"></div>
+                <div class="form-group"><label>Tình trạng</label><input type="text" id="fCondition"></div>
+                <div class="form-group"><label>Hãng SX</label><input type="text" id="fVendor"></div>
+                <div class="form-group"><label>Đơn vị Cung ứng</label><input type="text" id="fProvider"></div>
+                <div class="form-group"><label>Liên hệ kỹ thuật</label><input type="text" id="fContact"></div>
+                <div class="form-group"><label>Phụ trách</label><input type="text" id="fStaff"></div>
+                <div style="grid-column: span 2;"><button type="submit" class="btn btn-green" style="width:100%; padding:15px; font-size:18px;">LƯU DỮ LIỆU</button></div>
             </form>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://quanlymay-c28d9-default-rtdb.firebaseio.com/devices";
-        // CẬP NHẬT ĐỊA CHỈ WEB GITHUB CỦA BẠN TẠI ĐÂY
-        const WEB_URL = "https://hautruong339-blip.github.io/maychinh/";
-        let deviceData = {}; let activeKey = ""; let currentFilter = "all"; let editingLogId = "";
+        const API = "https://quanlymay-c28d9-default-rtdb.firebaseio.com/devices";
+        const WEB = "https://hautruong339-blip.github.io/maychinh/"; 
+        let deviceData = {}; let activeKey = ""; let currentFilter = "all";
+
+        function getVNTimeDate() {
+            const now = new Date();
+            const vnTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+            return vnTime.toISOString().split('T')[0];
+        }
 
         async function loadData(refreshModal = false) {
-            const res = await fetch(`${API_URL}.json`);
-            deviceData = await res.json() || {};
-            renderTable();
-            if (refreshModal && activeKey) showDetail(activeKey);
+            try {
+                const res = await fetch(`${API}.json`);
+                deviceData = await res.json() || {};
+                checkSystemStatus();
+                renderTable();
+                if (refreshModal && activeKey) showDetail(activeKey);
+            } catch (e) { console.error(e); }
+        }
+
+        function checkSystemStatus() {
+            const hasError = Object.values(deviceData).some(d => !d.isOnline);
+            document.getElementById('navStatus').style.display = hasError ? 'flex' : 'none';
         }
 
         function renderTable() {
             const tbody = document.getElementById('deviceTableBody'); tbody.innerHTML = "";
-            const sortedKeys = Object.keys(deviceData).sort((a, b) => (deviceData[a].group || "").localeCompare(deviceData[b].group || ""));
-            sortedKeys.forEach(key => {
+            const keys = Object.keys(deviceData).sort((a,b) => deviceData[a].group.localeCompare(deviceData[b].group));
+            keys.forEach(key => {
                 const d = deviceData[key];
-                if (currentFilter === 'status_center' && d.isOnline) return;
-                if (currentFilter !== 'all' && currentFilter !== 'status_center' && d.group !== currentFilter) return;
-                tbody.innerHTML += `<tr onclick="showDetail('${key}')"><td><b>${d.group}</b></td><td>${d.name}</td><td><code>${d.id}</code></td><td>${d.model || '-'}</td><td>${d.serial || '-'}</td><td style="color:${d.isOnline?'green':'red'}">● ${d.isOnline?'Sẵn sàng':'Đang xử lý'}</td><td style="text-align:center;"><i class="fas fa-trash" style="color:red;" onclick="event.stopPropagation(); deleteDevice('${key}')"></i></td></tr>`;
+                if (currentFilter === 'error' && d.isOnline) return;
+                if (currentFilter !== 'all' && currentFilter !== 'error' && d.group !== currentFilter) return;
+
+                // LOGIC PHÂN BIỆT TRẠNG THÁI HIỂN THỊ CHẤM ĐỎ
+                let statusText = "Sẵn Sàng";
+                let color = "green";
+                if(!d.isOnline) {
+                    color = "red";
+                    const activeLog = Object.values(d.logs || {}).find(l => !l.end);
+                    if(activeLog && activeLog.type === "Bảo trì") statusText = "Bảo trì";
+                    else statusText = "Đang xử lý";
+                }
+
+                tbody.innerHTML += `<tr onclick="showDetail('${key}')">
+                    <td><span style="background:var(--primary-blue); color:white; padding:3px 8px; border-radius:5px; font-weight:bold;">${d.group}</span></td>
+                    <td><b>${d.name}</b></td><td><code>${d.id}</code></td><td>${d.model}</td><td>${d.serial || '-'}</td>
+                    <td style="color:${color}; font-weight:bold;">● ${statusText}</td>
+                    <td style="text-align:center;"><i class="fas fa-trash-alt" style="color:#ddd; cursor:pointer;" onclick="event.stopPropagation(); deleteDevice('${key}')"></i></td>
+                </tr>`;
             });
         }
 
         function showDetail(key) {
             activeKey = key; const d = deviceData[key];
             document.getElementById('detName').innerText = d.name;
-            document.getElementById('detIdSub').innerText = "Mã ID: " + d.id;
-            
-            // TOÀN BỘ MÃ QR ĐỀU LÀ LINK WEB DẪN ĐẾN TRANG CHI TIẾT
-            const fullLink = WEB_URL + "?id=" + d.id;
-            document.getElementById('detQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullLink)}`;
+            document.getElementById('detIdSub').innerText = "Số hiệu ID: " + d.id;
+            document.getElementById('detQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(WEB+"?id="+d.id)}`;
             
             document.getElementById('detModel').innerText = d.model || "-";
             document.getElementById('detSerial').innerText = d.serial || "-";
             document.getElementById('detLocation').innerText = d.location || "-";
+            document.getElementById('detCondition').innerText = d.condition || "-";
             document.getElementById('detVendor').innerText = d.vendor || "-";
             document.getElementById('detProvider').innerText = d.provider || "-";
             document.getElementById('detContact').innerText = d.contact || "-";
             document.getElementById('detStaff').innerText = d.staff || "-";
-            document.getElementById('detStatusBadge').innerHTML = d.isOnline ? '<span style="color:green">● SẴN SÀNG HOẠT ĐỘNG</span>' : '<span style="color:red">● ĐANG TẠM DỪNG THIẾT BỊ</span>';
+            
+            document.getElementById('detStatusBadge').innerHTML = d.isOnline ? 
+                '<span style="color:var(--secondary-green)">● MÁY ĐANG SẴN SÀNG</span>' : 
+                '<span style="color:var(--danger)">● ĐANG CÓ LỖI/BẢO TRÌ</span>';
+            
+            document.getElementById('btnCheckOpen').style.display = (d.group === 'Sinh hóa') ? 'block' : 'none';
+            
+            const taskDiv = document.getElementById('activeTaskArea'); taskDiv.innerHTML = "";
+            if(d.logs) {
+                const activeTasks = Object.entries(d.logs).filter(([id, l]) => !l.end);
+                activeTasks.forEach(([lId, lData]) => {
+                    let info = lData.type === 'Bảo trì' ? `BẢO TRÌ: ${lData.tech} (${lData.start})` : `SỬA MÁY: ${lData.tech} - ${lData.note} (${lData.start})`;
+                    taskDiv.innerHTML += `<div class="task-card-active"><div class="task-info-red">${info}</div><button class="btn btn-green" onclick="finishWork('${lId}')">HOÀN TẤT</button></div>`;
+                });
+            }
+            document.getElementById('historyDateSelect').value = getVNTimeDate();
+            viewPastChecklist();
+            document.getElementById('detailModal').style.display = 'flex';
+        }
 
-            const logs = d.logs ? Object.entries(d.logs) : [];
-            const activeLogs = logs.filter(([id, l]) => !l.end);
-            const taskList = document.getElementById('currentTaskList'); taskList.innerHTML = "";
-            activeLogs.forEach(([lId, lData]) => {
-                taskList.innerHTML += `<div class="task-item"><div><b>${lData.type}: ${lData.tech}</b><br><small>${lData.start}</small></div><button class="btn" style="background:green; color:white; padding:5px 10px;" onclick="finishWork('${lId}')">HOÀN TẤT</button></div>`;
-            });
-
-            const hBT = document.getElementById('histBT'); const hSM = document.getElementById('histSM');
-            hBT.innerHTML = ""; hSM.innerHTML = "";
-            logs.reverse().forEach(([id, l]) => {
-                const card = `<div class="log-entry">
-                    <div class="log-actions"><i class="fas fa-edit" style="color:blue" onclick="openEditLog('${id}')"></i> &nbsp; <i class="fas fa-trash" style="color:red" onclick="deleteLog('${id}')"></i></div>
-                    <b>${l.tech}</b><br><small>${l.start} → ${l.end || '...'}</small><br><span>${l.note}</span>
-                </div>`;
-                if(l.type === 'Bảo trì') hBT.innerHTML += card; else hSM.innerHTML += card;
-            });
+        function backToDetail(currentModalId) {
+            document.getElementById(currentModalId).style.display = 'none';
             document.getElementById('detailModal').style.display = 'flex';
         }
 
         async function startWork(type) {
-            let tech = prompt("Tên kỹ sư thực hiện:"); let note = type === 'SM' ? prompt("Lý do sửa chữa:") : "Bảo trì định kỳ thiết bị";
-            if(tech) {
-                const log = { type: type==='BT'?'Bảo trì':'Sửa máy', tech, note, start: new Date().toLocaleString('vi-VN'), end: null };
-                await fetch(`${API_URL}/${activeKey}/isOnline.json`, { method: 'PUT', body: "false" });
-                await fetch(`${API_URL}/${activeKey}/logs.json`, { method: 'POST', body: JSON.stringify(log) });
-                await loadData(true);
-            }
+            let tech = prompt("Tên kỹ sư thực hiện:"); if(!tech) return;
+            let note = "Đang xử lý"; if(type === 'SM') { note = prompt("Lý do hỏng:"); if(!note) return; }
+            const log = { type: type==='BT'?'Bảo trì':'Sửa máy', tech, note, start: new Date().toLocaleString('vi-VN'), end: null };
+            await fetch(`${API}/${activeKey}/isOnline.json`, { method: 'PUT', body: "false" });
+            await fetch(`${API}/${activeKey}/logs.json`, { method: 'POST', body: JSON.stringify(log) });
+            loadData(true);
         }
 
         async function finishWork(id) {
-            const logs = Object.values(deviceData[activeKey].logs);
-            if(logs.filter(l => !l.end).length === 1) await fetch(`${API_URL}/${activeKey}/isOnline.json`, { method: 'PUT', body: "true" });
-            await fetch(`${API_URL}/${activeKey}/logs/${id}/end.json`, { method: 'PUT', body: JSON.stringify(new Date().toLocaleString('vi-VN')) });
-            await loadData(true);
+            await fetch(`${API}/${activeKey}/logs/${id}/end.json`, { method: 'PUT', body: JSON.stringify(new Date().toLocaleString('vi-VN')) });
+            const res = await fetch(`${API}/${activeKey}/logs.json`);
+            const currentLogs = await res.json() || {};
+            if(!Object.values(currentLogs).some(l => !l.end)) await fetch(`${API}/${activeKey}/isOnline.json`, { method: 'PUT', body: "true" });
+            loadData(true);
         }
 
-        function openEditFromDetail() {
+        function viewPastChecklist() {
+            const date = document.getElementById('historyDateSelect').value;
+            const log = Object.values(deviceData[activeKey].logs || {}).find(l => l.fullDate === date && l.type === 'Checklist');
+            document.getElementById('historyDetailContent').innerHTML = log ? `<b>NV ${log.tech}:</b> Checklist làm lúc ${log.start.split(' ')[1]}.` : `Chưa làm checklist ngày này.`;
+        }
+
+        function openChecklistHistory() {
+            const d = deviceData[activeKey]; let html = "";
+            Object.entries(d.logs || {}).filter(([id,l]) => l.type==='Checklist').reverse().forEach(([id,l]) => {
+                html += `<div style='border-left:5px solid var(--secondary-green); background:#f9f9f9; padding:15px; margin-bottom:10px; position:relative;'><b>Ngày: ${l.fullDate}</b> - NV: ${l.tech}<i class='fas fa-trash-alt' style='position:absolute; right:15px; color:#ddd; cursor:pointer;' onclick='deleteLog("${id}")'></i></div>`;
+            });
+            document.getElementById('checklistHistoryBody').innerHTML = html || "Trống";
+            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('checklistHistoryModal').style.display = 'flex';
+        }
+
+        function openChecklist() { 
+            document.getElementById('checkDateNow').value = getVNTimeDate(); 
+            document.querySelectorAll('.chk-daily, .chk-other').forEach(c => c.checked = false); 
+            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('checklistModal').style.display = 'flex'; 
+        }
+
+        function checkDailyOnly() { document.querySelectorAll('.chk-daily').forEach(c => c.checked = true); }
+
+        async function saveChecklist() {
+            const tech = document.getElementById('staffCode').value; if(!tech) return alert("Nhập Mã NV!");
+            const log = { type: 'Checklist', tech, fullDate: document.getElementById('checkDateNow').value, start: new Date().toLocaleString('vi-VN'), end: new Date().toLocaleString('vi-VN') };
+            await fetch(`${API}/${activeKey}/logs.json`, { method: 'POST', body: JSON.stringify(log) });
+            backToDetail('checklistModal'); loadData(true);
+        }
+
+        function openHistoryModal() {
+            const d = deviceData[activeKey]; let hBT="", hSM="";
+            Object.entries(d.logs || {}).reverse().forEach(([id,l]) => {
+                if(l.type === 'Checklist') return;
+                const row = `<div class='log-entry'>
+                                <div class='log-actions'><i class='fas fa-edit' onclick='editLog("${id}")'></i><i class='fas fa-trash-alt' onclick='deleteLog("${id}")'></i></div>
+                                <b>${l.tech}</b> (${l.start})<br>${l.note}
+                             </div>`;
+                if(l.type==='Bảo trì') hBT += row; else hSM += row;
+            });
+            document.getElementById('histBT').innerHTML = hBT || "Trống"; document.getElementById('histSM').innerHTML = hSM || "Trống";
+            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('historyModal').style.display='flex';
+        }
+
+        async function editLog(id) {
+            const log = deviceData[activeKey].logs[id];
+            const newTech = prompt("Sửa Tên Kỹ Sư:", log.tech); if(newTech === null) return;
+            const newNote = prompt("Sửa Nội dung / Lý do:", log.note); if(newNote === null) return;
+            const newTime = prompt("Sửa Ngày giờ:", log.start); if(newTime === null) return;
+            const updates = { tech: newTech, note: newNote, start: newTime };
+            await fetch(`${API}/${activeKey}/logs/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) });
+            loadData(true); openHistoryModal();
+        }
+
+        async function deleteLog(id) { if(confirm("Xóa dòng nhật ký này?")) { await fetch(`${API}/${activeKey}/logs/${id}.json`, { method: 'DELETE' }); loadData(true); if(document.getElementById('historyModal').style.display==='flex') openHistoryModal(); if(document.getElementById('checklistHistoryModal').style.display==='flex') openChecklistHistory(); } }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+        function showDashboard() { currentFilter = 'all'; document.getElementById('mainDashboard').style.display='grid'; document.getElementById('tableArea').style.display='none'; document.getElementById('btnAddDevice').style.display='none'; }
+        function setFilter(f) { currentFilter = f; document.getElementById('mainDashboard').style.display='none'; document.getElementById('tableArea').style.display='block'; document.getElementById('btnAddDevice').style.display = f==='all'?'block':'none'; renderTable(); }
+        async function deleteDevice(k) { if(confirm("Xóa máy?")) { await fetch(`${API}/${k}.json`, { method: 'DELETE' }); loadData(); } }
+        function openAddModal() { document.getElementById('deviceForm').reset(); document.getElementById('editKey').value=""; document.getElementById('fStaff').value = "Trương Công Hậu (0934187801)"; document.getElementById('formModal').style.display='flex'; }
+        function openEditFromDetail() { 
             const d = deviceData[activeKey]; document.getElementById('editKey').value = activeKey;
-            document.getElementById('fName').value = d.name; document.getElementById('fId').value = d.id; document.getElementById('fGroup').value = d.group;
-            document.getElementById('fModel').value = d.model || ""; document.getElementById('fSerial').value = d.serial || "";
-            document.getElementById('fLocation').value = d.location || ""; 
-            document.getElementById('fVendor').value = d.vendor || ""; document.getElementById('fProvider').value = d.provider || "";
-            document.getElementById('fContact').value = d.contact || ""; document.getElementById('fStaff').value = d.staff || ""; 
-            document.getElementById('detailModal').style.display = 'none'; document.getElementById('formModal').style.display = 'flex';
+            document.getElementById('fName').value = d.name; document.getElementById('fId').value = d.id;
+            document.getElementById('fGroup').value = d.group; document.getElementById('fModel').value = d.model || "";
+            document.getElementById('fSerial').value = d.serial || ""; document.getElementById('fLocation').value = d.location || "";
+            document.getElementById('fCondition').value = d.condition || ""; document.getElementById('fVendor').value = d.vendor || "";
+            document.getElementById('fProvider').value = d.provider || ""; document.getElementById('fContact').value = d.contact || "";
+            document.getElementById('fStaff').value = d.staff || "";
+            document.getElementById('detailModal').style.display='none'; document.getElementById('formModal').style.display='flex'; 
         }
-
-        function printLabel() {
-            const d = deviceData[activeKey];
-            const qrLink = WEB_URL + "?id=" + d.id;
-            const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrLink)}`;
-            const win = window.open('', '', 'width=450,height=550');
-            win.document.write(`<html><body style="text-align:center; font-family:Times New Roman; border:3px solid #000; padding:20px; border-radius:15px;">
-                <h2 style="margin:0">BV UNG BƯỚU CS2</h2><h3>${d.name}</h3><img src="${qrSrc}" width="200"><br>
-                <p>Mã ID: <b>${d.id}</b> | Model: ${d.model}</p><p><i>Quét mã để truy cập hệ thống trực tuyến</i></p>
-                <script>setTimeout(()=>{window.print(); window.close();},500);<\/script></body></html>`);
-        }
-
-        function openEditLog(id) {
-            editingLogId = id; const log = deviceData[activeKey].logs[id];
-            document.getElementById('elTech').value = log.tech;
-            document.getElementById('elNote').value = log.note || "";
-            document.getElementById('elStart').value = log.start;
-            document.getElementById('elEnd').value = log.end || "";
-            document.getElementById('editLogModal').style.display = 'flex';
-        }
-
-        async function saveEditedLog() {
-            const upd = { tech: document.getElementById('elTech').value, note: document.getElementById('elNote').value, start: document.getElementById('elStart').value, end: document.getElementById('elEnd').value };
-            await fetch(`${API_URL}/${activeKey}/logs/${editingLogId}.json`, { method: 'PATCH', body: JSON.stringify(upd) });
-            document.getElementById('editLogModal').style.display = 'none';
-            await loadData(true);
-        }
-
-        async function deleteLog(id) { if(confirm("Xóa vĩnh viễn dòng nhật ký này?")) { await fetch(`${API_URL}/${activeKey}/logs/${id}.json`, { method: 'DELETE' }); await loadData(true); } }
-        function showDashboard() { document.getElementById('mainDashboard').style.display='grid'; document.getElementById('tableArea').style.display='none'; document.getElementById('globalAddBtn').style.display='none'; }
-        function setFilter(f) { currentFilter=f; document.getElementById('mainDashboard').style.display='none'; document.getElementById('tableArea').style.display='block'; document.getElementById('globalAddBtn').style.display = f === 'all' ? 'block' : 'none'; renderTable(); }
-        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-        function toggleHistory(s) { document.getElementById('historyLayer').style.display = s ? 'block' : 'none'; }
-        async function deleteDevice(k) { if(confirm("Xóa toàn bộ thiết bị này khỏi hệ thống?")) { await fetch(`${API_URL}/${k}.json`, { method: 'DELETE' }); loadData(); } }
-        function openAddModal() { document.getElementById('deviceForm').reset(); document.getElementById('fStaff').value = "Trương Công Hậu (0934187801)"; document.getElementById('formModal').style.display = 'flex'; }
-        
         document.getElementById('deviceForm').onsubmit = async (e) => {
             e.preventDefault(); const key = document.getElementById('editKey').value;
-            const payload = {
-                name: document.getElementById('fName').value, id: document.getElementById('fId').value, group: document.getElementById('fGroup').value,
-                model: document.getElementById('fModel').value, serial: document.getElementById('fSerial').value, location: document.getElementById('fLocation').value,
-                vendor: document.getElementById('fVendor').value, provider: document.getElementById('fProvider').value,
-                contact: document.getElementById('fContact').value, staff: document.getElementById('fStaff').value,
-                isOnline: key ? deviceData[key].isOnline : true, logs: key ? (deviceData[key].logs || {}) : {}
+            const payload = { 
+                name: document.getElementById('fName').value, id: document.getElementById('fId').value, group: document.getElementById('fGroup').value, 
+                model: document.getElementById('fModel').value, serial: document.getElementById('fSerial').value, location: document.getElementById('fLocation').value, 
+                condition: document.getElementById('fCondition').value, vendor: document.getElementById('fVendor').value, provider: document.getElementById('fProvider').value, 
+                contact: document.getElementById('fContact').value, staff: document.getElementById('fStaff').value, isOnline: key ? deviceData[key].isOnline : true, logs: key ? (deviceData[key].logs || {}) : {} 
             };
-            if (key) await fetch(`${API_URL}/${key}.json`, { method: 'PUT', body: JSON.stringify(payload) });
-            else await fetch(`${API_URL}.json`, { method: 'POST', body: JSON.stringify(payload) });
-            closeModals(); loadData();
+            if(key) await fetch(`${API}/${key}.json`, { method: 'PUT', body: JSON.stringify(payload) });
+            else await fetch(`${API}.json`, { method: 'POST', body: JSON.stringify(payload) });
+            closeModals(); loadData(true);
         };
         loadData();
     </script>
