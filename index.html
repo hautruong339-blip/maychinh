@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BV UNG BƯỚU CS2 - KHOA XÉT NGHIỆM v79</title>
+    <title>BV UNG BƯỚU CS2 - KHOA XÉT NGHIỆM v81</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -47,15 +47,13 @@
         .info-item label { font-size: 11px; color: #666; font-weight: bold; display: block; text-transform: uppercase; margin-bottom: 2px; }
         .info-item span { font-size: 14px; font-weight: bold; color: #000; }
 
-        /* Nhật ký 2 cột có nút Sửa/Xóa */
+        /* Nhật ký 2 cột */
         .history-layer { display: none; position: absolute; inset: 0; background: white; z-index: 100; padding: 30px; overflow-y: auto; }
         .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .log-column { border: 1px solid #eee; padding: 15px; border-radius: 8px; }
         .log-entry { background: #f8f9fa; padding: 12px; border-left: 4px solid var(--primary-blue); margin-bottom: 10px; position: relative; border-radius: 4px; }
         .log-actions { position: absolute; top: 8px; right: 10px; display: flex; gap: 12px; }
-        .log-actions i { cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .log-edit-btn { color: #0055a5; }
-        .log-delete-btn { color: #cc0000; }
+        .log-actions i { cursor: pointer; font-size: 14px; color: #666; }
 
         .btn { padding: 10px 20px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .task-item { background: #fff5f5; border: 1px solid var(--danger); border-left: 5px solid var(--danger); padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
@@ -66,7 +64,7 @@
     <div class="sidebar">
         <div class="sidebar-header"><h3>BV UNG BƯỚU CS2</h3><p style="font-size:12px;">KHOA XÉT NGHIỆM</p></div>
         <div class="nav-item" onclick="showDashboard()"><i class="fas fa-home"></i> TRANG CHỦ</div>
-        <div class="nav-item nav-status" onclick="setFilter('status_center')"><i class="fas fa-tools"></i> TRẠNG THÁI THIẾT BỊ</div>
+        <div class="nav-item" onclick="setFilter('status_center')"><i class="fas fa-tools"></i> TRẠNG THÁI THIẾT BỊ</div>
         <div style="flex:1"></div>
         <div class="nav-item" onclick="setFilter('all')"><i class="fas fa-database"></i> TỔNG THIẾT BỊ</div>
     </div>
@@ -97,7 +95,7 @@
         <div class="modal-content">
             <div id="historyLayer" class="history-layer">
                 <div style="display:flex; justify-content:space-between; border-bottom:2px solid var(--primary-blue); margin-bottom:15px; padding-bottom:10px;">
-                    <h3>LỊCH SỬ CHI TIẾT</h3>
+                    <h3>LỊCH SỬ BẢO TRÌ & SỬA CHỮA</h3>
                     <button class="btn" onclick="toggleHistory(false)">ĐÓNG</button>
                 </div>
                 <div class="history-grid">
@@ -114,19 +112,18 @@
                 <div class="qr-section">
                     <img id="detQR" style="width:180px; border:1px solid #ddd; padding:5px; border-radius:10px; background:white;">
                     <div id="detStatusBadge" style="font-weight:bold; margin:15px 0;"></div>
-                    <button class="btn" style="width:100%; border:1px solid #ddd; margin-bottom:10px;" onclick="printLabel()">🖨 IN TEM QR DÁN MÁY</button>
+                    <button class="btn" style="width:100%; border:1px solid #ddd; margin-bottom:10px;" onclick="printLabel()">🖨 IN TEM QR (MỞ WEB)</button>
                     <button class="btn" style="width:100%; border:1px solid #ddd;" onclick="toggleHistory(true)">📜 XEM/SỬA NHẬT KÝ</button>
                 </div>
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <h3 style="color:var(--primary-blue); margin:0;">THÔNG TIN CHI TIẾT</h3>
-                        <button class="btn" style="padding:4px 10px; font-size:11px; border:1px solid #ddd;" onclick="openEditFromDetail()">SỬA DỮ LIỆU</button>
+                        <button class="btn" style="padding:4px 10px; font-size:11px; border:1px solid #ddd;" onclick="openEditFromDetail()">SỬA</button>
                     </div>
                     <div class="info-grid">
                         <div class="info-item"><label>Model</label><span id="detModel"></span></div>
                         <div class="info-item"><label>Số Serial</label><span id="detSerial"></span></div>
                         <div class="info-item"><label>Vị trí</label><span id="detLocation"></span></div>
-                        <div class="info-item"><label>Tình trạng</label><span id="detCondition"></span></div>
                         <div class="info-item"><label>Hãng Sản Xuất</label><span id="detVendor"></span></div>
                         <div class="info-item"><label>Đơn vị Cung ứng</label><span id="detProvider"></span></div>
                         <div class="info-item"><label>Liên hệ kỹ thuật</label><span id="detContact"></span></div>
@@ -150,7 +147,7 @@
             <label>Bắt đầu:</label><input type="text" id="elStart" style="width:100%; padding:8px; margin-bottom:10px;">
             <label>Kết thúc:</label><input type="text" id="elEnd" style="width:100%; padding:8px; margin-bottom:10px;">
             <div style="display:flex; gap:10px;">
-                <button class="btn" style="background:var(--success); color:white; flex:1;" onclick="saveEditedLog()">CẬP NHẬT</button>
+                <button class="btn" style="background:var(--success); color:white; flex:1;" onclick="saveEditedLog()">LƯU</button>
                 <button class="btn" style="flex:1;" onclick="document.getElementById('editLogModal').style.display='none'">HỦY</button>
             </div>
         </div>
@@ -158,35 +155,34 @@
 
     <div id="formModal" class="modal">
         <div class="modal-content" style="max-width: 650px;">
-            <div class="modal-header"><h2>Thông tin thiết bị</h2><span onclick="closeModals()">&times;</span></div>
+            <div class="modal-header"><h2>Thông tin máy</h2><span onclick="closeModals()">&times;</span></div>
             <form id="deviceForm" style="padding:20px; display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <input type="hidden" id="editKey">
                 <div style="grid-column: span 2;"><label>Tên thiết bị</label><input type="text" id="fName" style="width:100%; padding:8px;" required></div>
-                <div><label>Mã ID</label><input type="text" id="fId" style="width:100%; padding:10px;" required></div>
+                <div><label>Mã ID</label><input type="text" id="fId" style="width:100%; padding:8px;" required></div>
                 <div><label>Nhóm</label><select id="fGroup" style="width:100%; padding:10px;"><option value="Huyết học">Huyết học</option><option value="Miễn dịch">Miễn dịch</option><option value="Sinh hóa">Sinh hóa</option><option value="Vi sinh">Vi sinh</option><option value="SHPT">SHPT</option></select></div>
                 <div><label>Model</label><input type="text" id="fModel" style="width:100%; padding:8px;"></div>
                 <div><label>Số Serial</label><input type="text" id="fSerial" style="width:100%; padding:8px;"></div>
                 <div><label>Vị trí</label><input type="text" id="fLocation" style="width:100%; padding:8px;"></div>
-                <div><label>Tình trạng</label><input type="text" id="fCondition" style="width:100%; padding:8px;"></div>
                 <div><label>Hãng Sản Xuất</label><input type="text" id="fVendor" style="width:100%; padding:8px;"></div>
                 <div><label>Đơn vị Cung ứng</label><input type="text" id="fProvider" style="width:100%; padding:8px;"></div>
                 <div><label>Liên hệ kỹ thuật</label><input type="text" id="fContact" style="width:100%; padding:8px;"></div>
                 <div><label>Phụ trách</label><input type="text" id="fStaff" style="width:100%; padding:8px;"></div>
-                <div style="grid-column: span 2;"><button type="submit" class="btn" style="background:var(--primary-blue); color:white; width:100%;">LƯU DỮ LIỆU</button></div>
+                <div style="grid-column: span 2;"><button type="submit" class="btn" style="background:var(--primary-blue); color:white; width:100%;">LƯU THAY ĐỔI</button></div>
             </form>
         </div>
     </div>
 
     <script>
         const API_URL = "https://quanlymay-c28d9-default-rtdb.firebaseio.com/devices";
-        const WEB_URL = "https://hautruong339-blip.github.io/quanlymaychinh/";
+        // CẬP NHẬT ĐỊA CHỈ WEB GITHUB CỦA BẠN TẠI ĐÂY
+        const WEB_URL = "https://hautruong339-blip.github.io/maychinh/";
         let deviceData = {}; let activeKey = ""; let currentFilter = "all"; let editingLogId = "";
 
         async function loadData(refreshModal = false) {
             const res = await fetch(`${API_URL}.json`);
             deviceData = await res.json() || {};
             renderTable();
-            // Nếu refreshModal = true, tự động vẽ lại thông tin trong ô chi tiết
             if (refreshModal && activeKey) showDetail(activeKey);
         }
 
@@ -205,17 +201,19 @@
             activeKey = key; const d = deviceData[key];
             document.getElementById('detName').innerText = d.name;
             document.getElementById('detIdSub').innerText = "Mã ID: " + d.id;
+            
+            // TOÀN BỘ MÃ QR ĐỀU LÀ LINK WEB DẪN ĐẾN TRANG CHI TIẾT
             const fullLink = WEB_URL + "?id=" + d.id;
             document.getElementById('detQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullLink)}`;
+            
             document.getElementById('detModel').innerText = d.model || "-";
             document.getElementById('detSerial').innerText = d.serial || "-";
             document.getElementById('detLocation').innerText = d.location || "-";
-            document.getElementById('detCondition').innerText = d.condition || "-";
             document.getElementById('detVendor').innerText = d.vendor || "-";
             document.getElementById('detProvider').innerText = d.provider || "-";
             document.getElementById('detContact').innerText = d.contact || "-";
             document.getElementById('detStaff').innerText = d.staff || "-";
-            document.getElementById('detStatusBadge').innerHTML = d.isOnline ? '<span style="color:green">● SẴN SÀNG</span>' : '<span style="color:red">● ĐANG DỪNG</span>';
+            document.getElementById('detStatusBadge').innerHTML = d.isOnline ? '<span style="color:green">● SẴN SÀNG HOẠT ĐỘNG</span>' : '<span style="color:red">● ĐANG TẠM DỪNG THIẾT BỊ</span>';
 
             const logs = d.logs ? Object.entries(d.logs) : [];
             const activeLogs = logs.filter(([id, l]) => !l.end);
@@ -227,12 +225,8 @@
             const hBT = document.getElementById('histBT'); const hSM = document.getElementById('histSM');
             hBT.innerHTML = ""; hSM.innerHTML = "";
             logs.reverse().forEach(([id, l]) => {
-                const card = `
-                <div class="log-entry">
-                    <div class="log-actions">
-                        <i class="fas fa-edit log-edit-btn" onclick="openEditLog('${id}')"></i>
-                        <i class="fas fa-trash log-delete-btn" onclick="deleteLog('${id}')"></i>
-                    </div>
+                const card = `<div class="log-entry">
+                    <div class="log-actions"><i class="fas fa-edit" style="color:blue" onclick="openEditLog('${id}')"></i> &nbsp; <i class="fas fa-trash" style="color:red" onclick="deleteLog('${id}')"></i></div>
                     <b>${l.tech}</b><br><small>${l.start} → ${l.end || '...'}</small><br><span>${l.note}</span>
                 </div>`;
                 if(l.type === 'Bảo trì') hBT.innerHTML += card; else hSM.innerHTML += card;
@@ -241,12 +235,11 @@
         }
 
         async function startWork(type) {
-            let tech = prompt("Tên kỹ sư:"); let note = type === 'SM' ? prompt("Lý do sửa:") : "Bảo trì định kỳ";
+            let tech = prompt("Tên kỹ sư thực hiện:"); let note = type === 'SM' ? prompt("Lý do sửa chữa:") : "Bảo trì định kỳ thiết bị";
             if(tech) {
                 const log = { type: type==='BT'?'Bảo trì':'Sửa máy', tech, note, start: new Date().toLocaleString('vi-VN'), end: null };
                 await fetch(`${API_URL}/${activeKey}/isOnline.json`, { method: 'PUT', body: "false" });
                 await fetch(`${API_URL}/${activeKey}/logs.json`, { method: 'POST', body: JSON.stringify(log) });
-                // QUAN TRỌNG: Gọi loadData(true) để cập nhật ô chi tiết ngay lập tức
                 await loadData(true);
             }
         }
@@ -256,6 +249,27 @@
             if(logs.filter(l => !l.end).length === 1) await fetch(`${API_URL}/${activeKey}/isOnline.json`, { method: 'PUT', body: "true" });
             await fetch(`${API_URL}/${activeKey}/logs/${id}/end.json`, { method: 'PUT', body: JSON.stringify(new Date().toLocaleString('vi-VN')) });
             await loadData(true);
+        }
+
+        function openEditFromDetail() {
+            const d = deviceData[activeKey]; document.getElementById('editKey').value = activeKey;
+            document.getElementById('fName').value = d.name; document.getElementById('fId').value = d.id; document.getElementById('fGroup').value = d.group;
+            document.getElementById('fModel').value = d.model || ""; document.getElementById('fSerial').value = d.serial || "";
+            document.getElementById('fLocation').value = d.location || ""; 
+            document.getElementById('fVendor').value = d.vendor || ""; document.getElementById('fProvider').value = d.provider || "";
+            document.getElementById('fContact').value = d.contact || ""; document.getElementById('fStaff').value = d.staff || ""; 
+            document.getElementById('detailModal').style.display = 'none'; document.getElementById('formModal').style.display = 'flex';
+        }
+
+        function printLabel() {
+            const d = deviceData[activeKey];
+            const qrLink = WEB_URL + "?id=" + d.id;
+            const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrLink)}`;
+            const win = window.open('', '', 'width=450,height=550');
+            win.document.write(`<html><body style="text-align:center; font-family:Times New Roman; border:3px solid #000; padding:20px; border-radius:15px;">
+                <h2 style="margin:0">BV UNG BƯỚU CS2</h2><h3>${d.name}</h3><img src="${qrSrc}" width="200"><br>
+                <p>Mã ID: <b>${d.id}</b> | Model: ${d.model}</p><p><i>Quét mã để truy cập hệ thống trực tuyến</i></p>
+                <script>setTimeout(()=>{window.print(); window.close();},500);<\/script></body></html>`);
         }
 
         function openEditLog(id) {
@@ -275,11 +289,11 @@
         }
 
         async function deleteLog(id) { if(confirm("Xóa vĩnh viễn dòng nhật ký này?")) { await fetch(`${API_URL}/${activeKey}/logs/${id}.json`, { method: 'DELETE' }); await loadData(true); } }
-        
         function showDashboard() { document.getElementById('mainDashboard').style.display='grid'; document.getElementById('tableArea').style.display='none'; document.getElementById('globalAddBtn').style.display='none'; }
         function setFilter(f) { currentFilter=f; document.getElementById('mainDashboard').style.display='none'; document.getElementById('tableArea').style.display='block'; document.getElementById('globalAddBtn').style.display = f === 'all' ? 'block' : 'none'; renderTable(); }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
         function toggleHistory(s) { document.getElementById('historyLayer').style.display = s ? 'block' : 'none'; }
+        async function deleteDevice(k) { if(confirm("Xóa toàn bộ thiết bị này khỏi hệ thống?")) { await fetch(`${API_URL}/${k}.json`, { method: 'DELETE' }); loadData(); } }
         function openAddModal() { document.getElementById('deviceForm').reset(); document.getElementById('fStaff').value = "Trương Công Hậu (0934187801)"; document.getElementById('formModal').style.display = 'flex'; }
         
         document.getElementById('deviceForm').onsubmit = async (e) => {
@@ -287,7 +301,7 @@
             const payload = {
                 name: document.getElementById('fName').value, id: document.getElementById('fId').value, group: document.getElementById('fGroup').value,
                 model: document.getElementById('fModel').value, serial: document.getElementById('fSerial').value, location: document.getElementById('fLocation').value,
-                condition: document.getElementById('fCondition').value, vendor: document.getElementById('fVendor').value, provider: document.getElementById('fProvider').value,
+                vendor: document.getElementById('fVendor').value, provider: document.getElementById('fProvider').value,
                 contact: document.getElementById('fContact').value, staff: document.getElementById('fStaff').value,
                 isOnline: key ? deviceData[key].isOnline : true, logs: key ? (deviceData[key].logs || {}) : {}
             };
